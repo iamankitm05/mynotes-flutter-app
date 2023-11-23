@@ -21,55 +21,73 @@ class _RegistrationViewState extends State<RegistrationView> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-            children: [
-              TextField(
-                controller: _email,
-                enableSuggestions: false,
-                autocorrect: false,
-                keyboardType: TextInputType.emailAddress,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Email',
-                ),
-              ),
-              TextField(
-                controller: _password,
-                obscureText: true,
-                enableSuggestions: false,
-                autocorrect: false,
-                decoration: const InputDecoration(
-                  hintText: 'Enter Password',
-                ),
-              ),
-              TextButton(
-                onPressed: () async {
-                  final email = _email.text;
-                  final password = _password.text;
-                  try {
-                    final userCredential = await FirebaseAuth.instance
-                        .createUserWithEmailAndPassword(
-                      email: email,
-                      password: password,
-                    );
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.deepPurple,
+        title: const Text(
+          'New Registration',
+          style: TextStyle(color: Colors.white),
+        ),
+      ),
+      body: Column(
+        children: [
+          TextField(
+            controller: _email,
+            enableSuggestions: false,
+            autocorrect: false,
+            keyboardType: TextInputType.emailAddress,
+            decoration: const InputDecoration(
+              hintText: 'Enter Email',
+            ),
+          ),
+          TextField(
+            controller: _password,
+            obscureText: true,
+            enableSuggestions: false,
+            autocorrect: false,
+            decoration: const InputDecoration(
+              hintText: 'Enter Password',
+            ),
+          ),
+          TextButton(
+            onPressed: () async {
+              final email = _email.text;
+              final password = _password.text;
+              try {
+                final userCredential =
+                    await FirebaseAuth.instance.createUserWithEmailAndPassword(
+                  email: email,
+                  password: password,
+                );
 
-                    debugPrint("x------x--------x--------x-------x");
-                    debugPrint(userCredential.toString());
-                  } on FirebaseAuthException catch (e) {
-                    debugPrint("x------x--------x--------x-------x");
-                    if (e.code == 'weak-password') {
-                      debugPrint('Weak Password');
-                    } else if (e.code == 'email-already-in-use') {
-                      debugPrint('Email is already in use');
-                    } else {
-                      debugPrint('Invalid Email');
-                    }
-                    debugPrint(e.code);
-                  }
-                },
-                child: const Text("Register"),
-              ),
-            ],
-          );
+                debugPrint("x------x--------x--------x-------x");
+                debugPrint(userCredential.toString());
+              } on FirebaseAuthException catch (e) {
+                debugPrint("x------x--------x--------x-------x");
+                if (e.code == 'weak-password') {
+                  debugPrint('Weak Password');
+                } else if (e.code == 'email-already-in-use') {
+                  debugPrint('Email is already in use');
+                } else {
+                  debugPrint('Invalid Email');
+                }
+                debugPrint(e.code);
+              }
+            },
+            child: const Text("Register"),
+          ),
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pushNamedAndRemoveUntil(
+                "/login/",
+                (route) => false,
+              );
+            },
+            child: const Text("Already registered? login here!"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
