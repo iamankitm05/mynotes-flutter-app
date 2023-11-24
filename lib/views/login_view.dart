@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'dart:developer' as devtools show log;
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -54,21 +55,21 @@ class _LoginViewState extends State<LoginView> {
               final email = _email.text;
               final password = _password.text;
               try {
-                final userCredential =
-                    await FirebaseAuth.instance.signInWithEmailAndPassword(
+                await FirebaseAuth.instance.signInWithEmailAndPassword(
                   email: email,
                   password: password,
                 );
-                debugPrint("x------x--------x--------x-------x");
-                debugPrint(userCredential.toString());
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/notes/',
+                  (_) => false,
+                );
               } on FirebaseAuthException catch (e) {
-                debugPrint("x------x--------x--------x-------x");
                 if (e.code == 'network-request-failed') {
-                  debugPrint('Internet is not found');
+                  devtools.log('Internet is not found');
                 } else {
-                  debugPrint('Invalid Credential');
+                  devtools.log('Invalid Credential');
                 }
-                debugPrint(e.code);
+                devtools.log(e.code);
               }
             },
             child: const Text("Login"),
