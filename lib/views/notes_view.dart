@@ -28,7 +28,7 @@ class _NotesViewState extends State<NotesView> {
             onSelected: (value) async {
               switch (value) {
                 case MenuAction.logout:
-                  final shouldLogout = await showLogoutDialog(context);
+                  final shouldLogout = await showLogOutDialog(context);
                   if (shouldLogout) {
                     await FirebaseAuth.instance.signOut();
                     Navigator.of(context).pushNamedAndRemoveUntil(
@@ -57,7 +57,7 @@ class _NotesViewState extends State<NotesView> {
   }
 }
 
-Future<bool> showLogoutDialog(BuildContext context) {
+Future<bool> showLogOutDialog(BuildContext context) {
   return showDialog(
     context: context,
     builder: (context) {

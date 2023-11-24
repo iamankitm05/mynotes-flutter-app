@@ -1,8 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'dart:developer' as devtools show log;
-
 import 'package:mynotes/views/constants/routes.dart';
+import 'package:mynotes/views/utilites/show_error_dialog.dart';
 
 class LoginView extends StatefulWidget {
   const LoginView({super.key});
@@ -67,11 +66,46 @@ class _LoginViewState extends State<LoginView> {
                 );
               } on FirebaseAuthException catch (e) {
                 if (e.code == 'network-request-failed') {
-                  devtools.log('Internet is not found');
+                  await showErrorDialog(
+                    context,
+                    "Please check you Internet Connection",
+                  );
+                } else if (e.code == "invalid-email") {
+                  await showErrorDialog(
+                    context,
+                    "Invalid Email",
+                  );
+                } else if (e.code == "user-disabled") {
+                  await showErrorDialog(
+                    context,
+                    "User Disabled",
+                  );
+                } else if (e.code == "user-not-found") {
+                  await showErrorDialog(
+                    context,
+                    "User not Found",
+                  );
+                } else if (e.code == "missing-password") {
+                  await showErrorDialog(
+                    context,
+                    "Password is Required",
+                  );
+                } else if (e.code == "invalid-login-credentials") {
+                  await showErrorDialog(
+                    context,
+                    "Wrong Password",
+                  );
                 } else {
-                  devtools.log('Invalid Credential');
+                  await showErrorDialog(
+                    context,
+                    "Error: ${e.code}",
+                  );
                 }
-                devtools.log(e.code);
+              } catch (e) {
+                await showErrorDialog(
+                  context,
+                  e.toString(),
+                );
               }
             },
             child: const Text("Login"),
