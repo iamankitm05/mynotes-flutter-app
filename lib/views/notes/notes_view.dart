@@ -87,6 +87,10 @@ class _NotesViewState extends State<NotesView> {
                         return const Center(
                           child: Text("Waiting for the notes..."),
                         );
+                      case ConnectionState.active:
+                        return const Center(
+                          child: Text("Waiting for the notes..."),
+                        );
                       default:
                         return const Center(
                           child: CircularProgressIndicator(),
