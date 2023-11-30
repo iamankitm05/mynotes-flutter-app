@@ -40,6 +40,14 @@ class _NotesViewState extends State<NotesView> {
             style: TextStyle(color: Colors.white),
           ),
           actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(newNoteRoute);
+              },
+              icon: const Icon(
+                Icons.add,
+              ),
+            ),
             PopupMenuButton(
               onSelected: (value) async {
                 switch (value) {
@@ -74,7 +82,7 @@ class _NotesViewState extends State<NotesView> {
                 return StreamBuilder(
                   stream: _notesService.allNotes,
                   builder: (context, snapshot) {
-                    switch(snapshot.connectionState) {
+                    switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
                         return const Center(
                           child: Text("Waiting for the notes..."),
@@ -83,7 +91,6 @@ class _NotesViewState extends State<NotesView> {
                         return const Center(
                           child: CircularProgressIndicator(),
                         );
-
                     }
                   },
                 );
