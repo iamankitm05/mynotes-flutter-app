@@ -5,6 +5,8 @@ import 'package:mynotes/constants/routes.dart';
 import 'package:mynotes/enums/menu_action.dart';
 import 'package:mynotes/services/auth/auth_services.dart';
 import 'package:mynotes/services/crud/notes_service.dart';
+import 'package:mynotes/utilites/dialogs/logout_dialog.dart';
+import 'package:mynotes/views/notes/notes_list_view.dart';
 
 class NotesView extends StatefulWidget {
   const NotesView({super.key});
@@ -22,12 +24,6 @@ class _NotesViewState extends State<NotesView> {
     super.initState();
     _notesService = NotesService();
     _notesService.open();
-  }
-
-  @override
-  void dispose() {
-    _notesService.close();
-    super.dispose();
   }
 
   @override
@@ -84,13 +80,17 @@ class _NotesViewState extends State<NotesView> {
                   builder: (context, snapshot) {
                     switch (snapshot.connectionState) {
                       case ConnectionState.waiting:
-                        return const Center(
-                          child: Text("Waiting for the notes..."),
-                        );
                       case ConnectionState.active:
-                        return const Center(
-                          child: Text("Waiting for the notes..."),
-                        );
+                        if (snapshot.hasData) {
+                          final allNotes = snapshot.data as List<DatabaseNote>;
+                          return NotesListView(notes: allNotes, onDeleteNote: (note) async {
+                            await _notesService.deleteNote(id: note.id);
+                          });
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
                       default:
                         return const Center(
                           child: CircularProgressIndicator(),
@@ -106,30 +106,4 @@ class _NotesViewState extends State<NotesView> {
           },
         ));
   }
-}
-
-Future<bool> showLogOutDialog(BuildContext context) {
-  return showDialog(
-    context: context,
-    builder: (context) {
-      return AlertDialog(
-        title: const Text("Logout"),
-        content: const Text("Are you sure you want to Logout?"),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(false);
-            },
-            child: const Text("Cancel"),
-          ),
-          TextButton(
-            onPressed: () {
-              Navigator.of(context).pop(true);
-            },
-            child: const Text("Logout"),
-          ),
-        ],
-      );
-    },
-  ).then((value) => value ?? false);
 }
